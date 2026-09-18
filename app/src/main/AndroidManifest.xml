@@ -21,6 +21,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ContractAnalysisActivity"
+            android:exported="false" />
+
         <!-- Notification Listener Service -->
         <service
             android:name=".MyNotificationListenerService"

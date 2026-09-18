@@ -113,6 +113,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.btnContractAnalysis.setOnClickListener {
+            startActivity(Intent(this, ContractAnalysisActivity::class.java))
+        }
+
         // 모니터링 토글 스위치 안내
         binding.swMonitoring.setOnClickListener {
             val hasPermission = isNotificationServiceEnabled()
@@ -136,8 +140,8 @@ class MainActivity : AppCompatActivity() {
         // 1. 택배 배송 스미싱
         binding.btnMockDelivery.setOnClickListener {
             sendVirtualNotification(
-                "CJ대한통운 (1588-1255)",
-                "[CJ대한통운] 고객님의 운송장(842910) 주소지 불일치로 배송이 보류되었습니다. 주소 수정 및 재배송 신청: http://cj-post-modify.net/go"
+                "국방통운 (1588-1255)",
+                "[국방통운] 고객님의 운송장(842910) 주소지 불일치로 배송이 보류되었습니다. 주소 수정 및 재배송 신청: http://cj-post-modify.net/go"
             )
         }
 
@@ -161,23 +165,23 @@ class MainActivity : AppCompatActivity() {
         binding.btnMockCondolence.setOnClickListener {
             sendVirtualNotification(
                 "010-8888-9999",
-                "[부고] 모친(故 박영순)께서 별세하셨기에 부고를 전합니다. 장례식장 안내 및 조의금 전달: http://smart-condolence-msg.kr/view"
+                "[부고] 모친(故 김영희)께서 별세하셨기에 부고를 전합니다. 장례식장 안내 및 조의금 전달: http://smart-condolence-msg.kr/view"
             )
         }
 
         // 5. 정상 친구 일상 대화
         binding.btnMockNormalFriend.setOnClickListener {
             sendVirtualNotification(
-                "김민수 (동기)",
-                "민수야 오늘 저녁 7시에 강남역 11번 출구 고깃집에서 보기로 한 거 잊지 않았지? 이따 보자!"
+                "김민수",
+                "건희야 오늘 저녁 7시에 강남역 11번 출구 고깃집에서 보기로 한 거 잊지 않았지? 이따 보자!"
             )
         }
 
         // 6. 정상 은행/서비스 인증번호
         binding.btnMockNormalAuth.setOnClickListener {
             sendVirtualNotification(
-                "국민은행 (1599-9999)",
-                "[KB국민] 본인인증 번호는 [582914]입니다. 3분 이내에 입력해주세요. 타인에게 절대 공유 금지."
+                "army은행 (1599-9999)",
+                "[army은행] 본인인증 번호는 [582914]입니다. 3분 이내에 입력해주세요. 타인에게 절대 공유 금지."
             )
         }
 

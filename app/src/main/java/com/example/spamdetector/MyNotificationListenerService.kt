@@ -42,6 +42,14 @@ class MyNotificationListenerService : NotificationListenerService() {
         if (sbn == null) return
 
         val packageName = sbn.packageName ?: ""
+
+        // 서비스가 직접 만든 경고 알림은 다시 분석하지 않아야 한다.
+        if (packageName == applicationContext.packageName &&
+            sbn.notification.channelId == CHANNEL_ID
+        ) {
+            return
+        }
+
         val extras = sbn.notification.extras
         val title = extras.getString(NotificationCompat.EXTRA_TITLE) ?: ""
         val text = extras.getCharSequence(NotificationCompat.EXTRA_TEXT)?.toString() ?: ""

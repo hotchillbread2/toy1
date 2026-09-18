@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#0F172A"
-    android:padding="16dp"
+    android:fillViewport="true"
     tools:context=".MainActivity">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <!-- 1. Header Title -->
     <TextView
@@ -159,6 +164,48 @@
                     android:text="저장"
                     android:backgroundTint="#6366F1" />
             </LinearLayout>
+            </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 4. Contract Analysis -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="#1E293B"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📄 계약·금융상품 분석"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="이용약관, 보험, 금융상품 설명서 사진을 올리면 핵심 위험과 점수를 비교해 드립니다."
+                android:textColor="#94A3B8"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnContractAnalysis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#6366F1"
+                android:text="사진 올리고 계약 분석하기"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -330,9 +377,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLogs"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:nestedScrollingEnabled="false"
         tools:listitem="@layout/item_log" />
 
 </LinearLayout>
+</androidx.core.widget.NestedScrollView>

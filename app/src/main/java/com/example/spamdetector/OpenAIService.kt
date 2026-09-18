@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.util.Base64
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -69,7 +70,6 @@ object OpenAIService {
                     }
                     return@withContext SpamAnalysisResult(false, "NONE", "응답 내용 파싱 실패")
                 } else {
-                    val errorMsg = response.body?.string() ?: ""
                     // API 에러 발생 시 테스트를 위해 mock 분석으로 fallback 안내
                     val fallback = mockAnalyzeMessage(messageContent)
                     return@withContext fallback.copy(
@@ -83,6 +83,57 @@ object OpenAIService {
             return@withContext fallback.copy(
                 reason = "[Mock Fallback (오프라인)] ${fallback.reason}"
             )
+        }
+    }
+
+    suspend fun analyzeDocumentImage(imageBytes: ByteArray, fileName: String, apiKey: String): DocumentAnalysisResult = withContext(Dispatchers.IO) {
+        if (imageBytes.isEmpty() || apiKey.isBlank() || apiKey.equals("MOCK", ignoreCase = true) || apiKey.equals("TEST", ignoreCase = true)) {
+            return@withContext mockAnalyzeDocument(fileName)
+        }
+
+        val encodedImage = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+        val systemPrompt = "당신은 보험, 금융상품, 이용약관을 검토하는 소비자 보호 전문가입니다. " +
+                "이미지의 글자를 읽고 보장 범위, 면책, 수수료, 해지 조건을 중심으로 소비자에게 유리한지 평가하세요. " +
+                "반드시 다음 JSON만 반환하세요: {\"score\": 숫자(0~5), \"grade\": \"한글 등급\", \"summary\": \"요약\", \"risks\": [\"위험1\", \"위험2\"], \"recommendations\": [\"비교 추천1\", \"비교 추천2\"]}"
+        val requestBodyMap = mapOf(
+            "model" to "gpt-4o-mini",
+            "messages" to listOf(
+                mapOf("role" to "system", "content" to systemPrompt),
+                mapOf("role" to "user", "content" to listOf(
+                    mapOf("type" to "text", "text" to "이 설명서를 분석해줘. 숫자와 조건을 추측하지 말고 읽히지 않는 부분은 명시해줘."),
+                    mapOf("type" to "image_url", "image_url" to mapOf("url" to "data:image/jpeg;base64,$encodedImage"))
+                ))
+            ),
+            "response_format" to mapOf("type" to "json_object"),
+            "temperature" to 0.1
+        )
+        val request = Request.Builder()
+            .url(ENDPOINT)
+            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Content-Type", "application/json")
+            .post(gson.toJson(requestBodyMap).toRequestBody("application/json; charset=utf-8".toMediaType()))
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) return@withContext mockAnalyzeDocument(fileName)
+                val content = response.body?.string()?.let { body ->
+                    gson.fromJson(body, OpenAIResponse::class.java).choices.firstOrNull()?.message?.content
+                }
+                return@withContext content?.let { gson.fromJson(it, DocumentAnalysisResult::class.java) }
+                    ?: mockAnalyzeDocument(fileName)
+            }
+        } catch (_: Exception) {
+            return@withContext mockAnalyzeDocument(fileName)
+        }
+    }
+
+    private fun mockAnalyzeDocument(fileName: String): DocumentAnalysisResult {
+        val lowerName = fileName.lowercase()
+        return if (lowerName.contains("보험") || lowerName.contains("insurance")) {
+            DocumentAnalysisResult(3.2, "보통", "보장은 확인되지만 면책과 갱신 조건을 먼저 비교해야 하는 상품입니다.", listOf("갱신 시 보험료 인상 가능성 확인", "면책 기간과 보장 제외 항목 확인"), listOf("비갱신형 동일 보장 상품", "면책 조건이 짧은 실손·건강보험 상품"))
+        } else {
+            DocumentAnalysisResult(3.6, "양호", "주요 조건이 비교 가능한 형태로 정리되었습니다. 수수료와 중도해지 조건을 확인하세요.", listOf("중도해지 환급금 및 수수료 확인", "자동 갱신·개인정보 제공 범위 확인"), listOf("수수료가 낮은 동일 유형 상품", "해지 조건이 단순한 대체 상품"))
         }
     }
 

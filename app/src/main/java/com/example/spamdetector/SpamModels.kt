@@ -35,3 +35,11 @@ data class SpamLogItem(
     @SerializedName("time")
     val time: String
 )
+
+data class DocumentAnalysisResult(
+    val score: Double,
+    val grade: String,
+    val summary: String,
+    val risks: List<String>,
+    val recommendations: List<String>
+)
