@@ -118,6 +118,15 @@
                     android:textColor="#000000"
                     style="?android:attr/buttonStyleSmall" />
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnCaptureOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#0EA5E9"
+                android:text="🔍 화면 위 약관 검색 아이콘 켜기"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

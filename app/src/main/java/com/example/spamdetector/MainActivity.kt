@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.media.projection.MediaProjectionManager
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,6 +125,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             startActivity(intent)
         }
+
+        binding.btnCaptureOverlay.setOnClickListener { startCaptureOverlaySetup() }
 
         binding.btnContractAnalysis.setOnClickListener {
             startActivity(Intent(this, ContractAnalysisActivity::class.java))
@@ -277,6 +281,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun startCaptureOverlaySetup() {
+        if (!Settings.canDrawOverlays(this)) {
+            startActivity(Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            ))
+            return
+        }
+        val manager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE_PERMISSION)
+    }
+
+    @Deprecated("Deprecated API retained for minSdk compatibility")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_CAPTURE_PERMISSION || resultCode != RESULT_OK || data == null) return
+        val serviceIntent = Intent(this, CaptureOverlayService::class.java).apply {
+            action = CaptureOverlayService.ACTION_START
+            putExtra(CaptureOverlayService.EXTRA_RESULT_CODE, resultCode)
+            putExtra(CaptureOverlayService.EXTRA_RESULT_DATA, data)
+        }
+        ContextCompat.startForegroundService(this, serviceIntent)
+        Toast.makeText(this, "화면 위 검색 아이콘이 실행되었습니다.", Toast.LENGTH_SHORT).show()
+    }
+
     private fun sendVirtualNotification(title: String, body: String) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "virtual_incoming_channel"
@@ -344,5 +373,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int = logs.size
+    }
+
+    companion object {
+        private const val REQUEST_CAPTURE_PERMISSION = 702
     }
 }

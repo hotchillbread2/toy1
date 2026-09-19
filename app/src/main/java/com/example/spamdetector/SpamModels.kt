@@ -43,3 +43,9 @@ data class DocumentAnalysisResult(
     val risks: List<String>,
     val recommendations: List<String>
 )
+
+data class ContractAnalysisHistory(
+    val source: String,
+    val result: DocumentAnalysisResult,
+    val savedAt: String
+)

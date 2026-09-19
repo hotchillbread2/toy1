@@ -103,7 +103,7 @@ class CaptureOverlayService : Service() {
             image.close()
             val file = File(cacheDir, "terms-capture-${System.currentTimeMillis()}.png")
             FileOutputStream(file).use { output ->
-                bitmap.createBitmap(0, 0, metrics.widthPixels, metrics.heightPixels)
+                Bitmap.createBitmap(bitmap, 0, 0, metrics.widthPixels, metrics.heightPixels)
                     .compress(Bitmap.CompressFormat.PNG, 100, output)
             }
             bitmap.recycle()

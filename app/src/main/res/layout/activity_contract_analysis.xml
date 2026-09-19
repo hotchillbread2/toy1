@@ -135,6 +135,37 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="#172554"
+            app:cardCornerRadius="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="저장된 이용약관 판단 내용"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSavedHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="#CBD5E1"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardConsultant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -150,6 +181,7 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/tvPremiumLock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="전문가와 1:1로 비교 상담"
@@ -164,6 +196,15 @@
                     android:text="여러 상품의 보장·수수료·해지 조건을 함께 비교할 상담사를 유료로 매칭합니다."
                     android:textColor="#C7D2FE"
                     android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnUnlockPremium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#475569"
+                    android:text="🔒 결제 후 더 나은 대안 서비스 확인"
+                    android:textColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/btnConsultant"
