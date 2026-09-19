@@ -49,3 +49,8 @@ data class ContractAnalysisHistory(
     val result: DocumentAnalysisResult,
     val savedAt: String
 )
+
+data class ChatMessage(
+    val text: String,
+    val sentAt: String
+)

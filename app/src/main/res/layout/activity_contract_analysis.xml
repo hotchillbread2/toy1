@@ -181,7 +181,6 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/tvPremiumLock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="전문가와 1:1로 비교 상담"
@@ -190,10 +189,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvPremiumLock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="여러 상품의 보장·수수료·해지 조건을 함께 비교할 상담사를 유료로 매칭합니다."
+                    android:text="🔒 유료 기능을 해제하면 더 나은 대안 서비스와 전문가 비교 상담을 확인할 수 있습니다."
                     android:textColor="#C7D2FE"
                     android:textSize="12sp" />
 

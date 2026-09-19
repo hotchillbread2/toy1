@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val gson = Gson()
     private val logList = ArrayList<SpamLogItem>()
     private lateinit var logAdapter: LogAdapter
+    private var waitingForOverlayPermission = false
 
     // 서비스에서 날아오는 스캔 이력 브로드캐스트 리시버
     private val logReceiver = object : BroadcastReceiver() {
@@ -82,6 +83,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updatePermissionAndServiceStatus()
+        if (waitingForOverlayPermission && Settings.canDrawOverlays(this)) {
+            waitingForOverlayPermission = false
+            requestScreenCapturePermission()
+        }
         // 리시버 등록
         val filter = IntentFilter(MyNotificationListenerService.ACTION_NEW_LOG)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -283,12 +288,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCaptureOverlaySetup() {
         if (!Settings.canDrawOverlays(this)) {
+            waitingForOverlayPermission = true
             startActivity(Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             ))
             return
         }
+        requestScreenCapturePermission()
+    }
+
+    private fun requestScreenCapturePermission() {
         val manager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE_PERMISSION)
     }
