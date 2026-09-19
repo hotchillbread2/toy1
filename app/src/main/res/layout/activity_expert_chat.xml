@@ -5,6 +5,48 @@
     android:background="#0F172A"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#1E293B"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="18dp">
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_chat_avatar"
+            android:gravity="center"
+            android:text="전"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="약관 전문가"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="온라인"
+                android:textColor="#94A3B8"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -15,65 +57,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="18dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
-                android:text="1:1 전문가 채팅"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="이용약관과 금융상품의 어려운 내용을 전문가에게 물어보세요."
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="18dp"
+                android:text="오늘"
                 android:textColor="#94A3B8"
-                android:textSize="13sp" />
+                android:textSize="11sp" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvChatHistory"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#1E293B"
-                app:cardCornerRadius="16dp"
-                xmlns:app="http://schemas.android.com/apk/res-auto">
-
-                <TextView
-                    android:id="@+id/tvChatHistory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="전문가: 안녕하세요. 확인하고 싶은 약관이나 문장을 남겨주시면 함께 살펴보겠습니다."
-                    android:textColor="#E2E8F0"
-                    android:textSize="14sp" />
-            </androidx.cardview.widget.CardView>
-
-            <EditText
-                android:id="@+id/etMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="질문을 입력하세요"
-                android:inputType="textCapSentences|textMultiLine"
-                android:minLines="3"
-                android:padding="12dp"
+                android:layout_gravity="start"
+                android:background="@drawable/bg_chat_bubble_received"
+                android:maxWidth="300dp"
+                android:padding="14dp"
+                android:text="안녕하세요. 확인하고 싶은 약관이나 문장을 남겨주시면 함께 살펴보겠습니다."
                 android:textColor="#FFFFFF"
-                android:textColorHint="#64748B"
-                android:backgroundTint="#475569" />
-
-            <Button
-                android:id="@+id/btnSendMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#0EA5E9"
-                android:text="전문가에게 보내기"
-                android:textColor="#FFFFFF" />
+                android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1E293B"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chat_input"
+            android:hint="메시지 보내기"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="3"
+            android:paddingHorizontal="16dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#94A3B8"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:backgroundTint="#6366F1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="14dp"
+            android:text="전송"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <include layout="@layout/include_bottom_navigation" />
 </LinearLayout>

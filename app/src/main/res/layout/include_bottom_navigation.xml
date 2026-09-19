@@ -5,36 +5,44 @@
     android:layout_height="wrap_content"
     android:background="#1E293B"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:elevation="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
-    <Button
+    <TextView
         android:id="@+id/navSpamLogs"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:backgroundTint="@android:color/transparent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
         android:text="스팸 문자내역"
         android:textColor="#FFFFFF"
-        android:textSize="11sp" />
+        android:textSize="11sp"
+        android:textStyle="bold" />
 
-    <Button
+    <TextView
         android:id="@+id/navTerms"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:backgroundTint="@android:color/transparent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
         android:text="이용약관 확인"
-        android:textColor="#CBD5E1"
+        android:textColor="#94A3B8"
         android:textSize="11sp" />
 
-    <Button
+    <TextView
         android:id="@+id/navExpertChat"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:backgroundTint="@android:color/transparent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
         android:text="1:1 전문가 채팅"
-        android:textColor="#CBD5E1"
+        android:textColor="#94A3B8"
         android:textSize="11sp" />
 </LinearLayout>
