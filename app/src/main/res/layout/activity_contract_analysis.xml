@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A"
+    android:orientation="vertical">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
     android:fillViewport="true">
 
     <LinearLayout
@@ -66,6 +72,15 @@
                     android:backgroundTint="#6366F1"
                     android:enabled="false"
                     android:text="AI로 내용 분석하기"
+                    android:textColor="#FFFFFF" />
+
+                <Button
+                    android:id="@+id/btnMockTerms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:backgroundTint="#334155"
+                    android:text="Mock 이용약관 샘플로 테스트"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -162,3 +177,6 @@
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 </ScrollView>
+
+<include layout="@layout/include_bottom_navigation" />
+</LinearLayout>

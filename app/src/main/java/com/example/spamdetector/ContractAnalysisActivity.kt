@@ -24,9 +24,36 @@ class ContractAnalysisActivity : AppCompatActivity() {
 
         binding.btnSelectDocument.setOnClickListener { selectDocument() }
         binding.btnAnalyzeDocument.setOnClickListener { analyzeDocument() }
+        binding.btnMockTerms.setOnClickListener { showMockTermsResult() }
         binding.btnConsultant.setOnClickListener {
-            Toast.makeText(this, "상담 신청이 접수되었습니다. 매칭 가능한 상담사를 확인하는 중입니다.", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, ExpertChatActivity::class.java))
         }
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        binding.root.findViewById<View>(R.id.navSpamLogs).setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+        binding.root.findViewById<View>(R.id.navTerms).setOnClickListener { }
+        binding.root.findViewById<View>(R.id.navExpertChat).setOnClickListener {
+            startActivity(Intent(this, ExpertChatActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun showMockTermsResult() {
+        binding.tvSelectedDocument.text = "Mock 이용약관 샘플"
+        showResult(
+            DocumentAnalysisResult(
+                score = 2.8,
+                grade = "주의",
+                summary = "무료 서비스 이용약관 Mock 데이터입니다. 자동 갱신과 개인정보 제공 범위를 확인하세요.",
+                risks = listOf("별도 알림 없이 유료 서비스로 전환될 수 있는 조항", "제3자 광고·마케팅 목적의 개인정보 제공"),
+                recommendations = listOf("자동 결제 및 해지 조건 확인", "개인정보 수집·제공 동의 범위 축소")
+            )
+        )
     }
 
     private fun selectDocument() {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomNavigation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#1E293B"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <Button
+        android:id="@+id/navSpamLogs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:backgroundTint="@android:color/transparent"
+        android:text="스팸 문자내역"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp" />
+
+    <Button
+        android:id="@+id/navTerms"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:backgroundTint="@android:color/transparent"
+        android:text="이용약관 확인"
+        android:textColor="#CBD5E1"
+        android:textSize="11sp" />
+
+    <Button
+        android:id="@+id/navExpertChat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:backgroundTint="@android:color/transparent"
+        android:text="1:1 전문가 채팅"
+        android:textColor="#CBD5E1"
+        android:textSize="11sp" />
+</LinearLayout>

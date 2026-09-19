@@ -62,8 +62,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupUI()
+        setupBottomNavigation()
         checkAndRequestPermissions()
         loadApiKeyAndHistory()
+    }
+
+    private fun setupBottomNavigation() {
+        binding.root.findViewById<View>(R.id.navSpamLogs).setOnClickListener { }
+        binding.root.findViewById<View>(R.id.navTerms).setOnClickListener {
+            startActivity(Intent(this, ContractAnalysisActivity::class.java))
+        }
+        binding.root.findViewById<View>(R.id.navExpertChat).setOnClickListener {
+            startActivity(Intent(this, ExpertChatActivity::class.java))
+        }
     }
 
     override fun onResume() {

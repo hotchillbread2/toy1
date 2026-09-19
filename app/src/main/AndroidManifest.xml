@@ -8,7 +8,7 @@
     <application
         android:allowBackup="true"
         android:icon="@android:drawable/sym_def_app_icon"
-        android:label="스팸 실드 AI"
+        android:label="실드 AI"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         
@@ -25,10 +25,14 @@
             android:name=".ContractAnalysisActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ExpertChatActivity"
+            android:exported="false" />
+
         <!-- Notification Listener Service -->
         <service
             android:name=".MyNotificationListenerService"
-            android:label="스팸 실드 알림 청취 서비스"
+            android:label="스팸 알림 청취 서비스"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:exported="true">
             <intent-filter>
