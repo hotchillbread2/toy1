@@ -14,6 +14,8 @@ import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.IBinder
+import android.content.pm.ServiceInfo
+import android.widget.Toast
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -30,14 +32,17 @@ class CaptureOverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(NOTIFICATION_ID, createNotification())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_START) {
             val resultCode = intent.getIntExtra(EXTRA_RESULT_CODE, -1)
             val resultData = intent.getParcelableExtra<Intent>(EXTRA_RESULT_DATA)
-            if (resultCode != -1 && resultData != null) startProjection(resultCode, resultData)
+            if (resultCode != -1 && resultData != null) {
+                startProjection(resultCode, resultData)
+                promoteToForeground()
+                addSearchButton()
+            }
         }
         return START_STICKY
     }
@@ -45,11 +50,26 @@ class CaptureOverlayService : Service() {
     private fun startProjection(resultCode: Int, resultData: Intent) {
         if (searchButton != null) return
         val manager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        projection = manager.getMediaProjection(resultCode, resultData)
-        projection?.registerCallback(object : MediaProjection.Callback() {
-            override fun onStop() = stopSelf()
-        }, null)
-        addSearchButton()
+        try {
+            projection = manager.getMediaProjection(resultCode, resultData)
+            projection?.registerCallback(object : MediaProjection.Callback() {
+                override fun onStop() = stopSelf()
+            }, null)
+        } catch (_: SecurityException) {
+            Toast.makeText(this, "화면 캡처 권한을 다시 허용해 주세요.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun promoteToForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                NOTIFICATION_ID,
+                createNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, createNotification())
+        }
     }
 
     private fun addSearchButton() {
@@ -66,16 +86,26 @@ class CaptureOverlayService : Service() {
             @Suppress("DEPRECATION")
             WindowManager.LayoutParams.TYPE_PHONE
         }
+        val size = (56 * resources.displayMetrics.density).toInt()
         val params = WindowManager.LayoutParams(
-            58, 58, type, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT
+            size, size, type, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
-            x = 20
+            x = (12 * resources.displayMetrics.density).toInt()
         }
-        windowManager?.addView(searchButton, params)
+        try {
+            windowManager?.addView(searchButton, params)
+        } catch (_: WindowManager.BadTokenException) {
+            Toast.makeText(this, "다른 앱 위에 표시 권한을 허용해 주세요.", Toast.LENGTH_LONG).show()
+            stopSelf()
+        }
     }
 
     private fun captureScreen() {
+        if (projection == null) {
+            Toast.makeText(this, "화면 공유 권한이 필요합니다. 앱에서 다시 시작해 주세요.", Toast.LENGTH_LONG).show()
+            return
+        }
         val metrics = resources.displayMetrics
         imageReader = ImageReader.newInstance(
             metrics.widthPixels, metrics.heightPixels, PixelFormat.RGBA_8888, 2

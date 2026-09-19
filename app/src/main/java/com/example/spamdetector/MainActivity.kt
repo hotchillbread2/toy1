@@ -312,8 +312,12 @@ class MainActivity : AppCompatActivity() {
             putExtra(CaptureOverlayService.EXTRA_RESULT_CODE, resultCode)
             putExtra(CaptureOverlayService.EXTRA_RESULT_DATA, data)
         }
-        ContextCompat.startForegroundService(this, serviceIntent)
-        Toast.makeText(this, "화면 위 검색 아이콘이 실행되었습니다.", Toast.LENGTH_SHORT).show()
+        try {
+            ContextCompat.startForegroundService(this, serviceIntent)
+            Toast.makeText(this, "화면 위 검색 아이콘이 실행되었습니다.", Toast.LENGTH_SHORT).show()
+        } catch (_: SecurityException) {
+            Toast.makeText(this, "오버레이 또는 화면 공유 권한을 확인해 주세요.", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun sendVirtualNotification(title: String, body: String) {
