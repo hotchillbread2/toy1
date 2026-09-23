@@ -23,6 +23,7 @@ class ContractAnalysisActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContractAnalysisBinding
     private var selectedUri: Uri? = null
+    private var latestResult: DocumentAnalysisResult? = null
     private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +34,13 @@ class ContractAnalysisActivity : AppCompatActivity() {
         binding.btnSelectDocument.setOnClickListener { selectDocument() }
         binding.btnAnalyzeDocument.setOnClickListener { analyzeDocument() }
         binding.btnMockTerms.setOnClickListener { showMockTermsResult() }
+        binding.tvDocumentScore.setOnClickListener {
+            latestResult?.let { result ->
+                startActivity(Intent(this, ContractAnalysisDetailActivity::class.java).apply {
+                    putExtra(ContractAnalysisDetailActivity.EXTRA_RESULT, gson.toJson(result))
+                })
+            }
+        }
         binding.btnConsultant.setOnClickListener {
             if (!isPremiumUnlocked()) return@setOnClickListener
             startActivity(Intent(this, ExpertChatActivity::class.java))
@@ -134,6 +142,7 @@ class ContractAnalysisActivity : AppCompatActivity() {
     }
 
     private fun showResult(result: DocumentAnalysisResult, source: String = "선택한 설명서") {
+        latestResult = result
         binding.cardAnalysisResult.visibility = View.VISIBLE
         binding.cardConsultant.visibility = View.VISIBLE
         binding.tvDocumentScore.text = "계약 점수 ${result.score}/5.0  ·  ${result.grade}"
