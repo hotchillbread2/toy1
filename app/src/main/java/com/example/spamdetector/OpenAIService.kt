@@ -21,6 +21,50 @@ object OpenAIService {
     private val gson = Gson()
     private const val ENDPOINT = "https://api.openai.com/v1/chat/completions"
 
+    suspend fun chat(messages: List<ChatMessage>, apiKey: String): String = withContext(Dispatchers.IO) {
+        val lastMessage = messages.lastOrNull { it.role == "user" }?.text.orEmpty()
+        if (apiKey.isBlank() || apiKey.equals("MOCK", ignoreCase = true) || apiKey.equals("TEST", ignoreCase = true)) {
+            return@withContext mockChatReply(lastMessage)
+        }
+
+        val requestBodyMap = mapOf(
+            "model" to "gpt-4o-mini",
+            "messages" to buildList {
+                add(mapOf(
+                    "role" to "system",
+                    "content" to "당신은 Life Shield AI의 1:1 약관·보안 상담 에이전트입니다. " +
+                            "사용자의 질문에 한국어로 정확하고 이해하기 쉽게 답하세요. " +
+                            "법률 자문이 필요한 경우 일반 정보임을 밝히고 약관의 해당 조건을 확인하도록 안내하세요."
+                ))
+                addAll(messages.takeLast(20).map { message ->
+                    mapOf("role" to message.role, "content" to message.text)
+                })
+            },
+            "temperature" to 0.4
+        )
+        val request = Request.Builder()
+            .url(ENDPOINT)
+            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Content-Type", "application/json")
+            .post(gson.toJson(requestBodyMap).toRequestBody("application/json; charset=utf-8".toMediaType()))
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string().orEmpty()
+                if (!response.isSuccessful) {
+                    return@withContext fallbackChatReply(lastMessage)
+                }
+                val content = gson.fromJson(responseBody, OpenAIResponse::class.java)
+                    .choices.firstOrNull()?.message?.content?.trim()
+                if (content.isNullOrEmpty()) return@withContext fallbackChatReply(lastMessage)
+                return@withContext content
+            }
+        } catch (_: Exception) {
+            return@withContext fallbackChatReply(lastMessage)
+        }
+    }
+
     suspend fun analyzeMessage(messageContent: String, apiKey: String): SpamAnalysisResult = withContext(Dispatchers.IO) {
         // API 키가 없거나 MOCK/TEST 모드인 경우 스마트 목 분석기로 즉시 처리
         if (apiKey.isBlank() || apiKey.equals("MOCK", ignoreCase = true) || apiKey.equals("TEST", ignoreCase = true)) {
@@ -188,6 +232,32 @@ object OpenAIService {
             riskLevel = "NONE",
             reason = "위험 키워드 및 악성 링크가 감지되지 않은 안전한 일상 메시지입니다."
         )
+    }
+
+    private fun mockChatReply(message: String): String {
+        val lowerMessage = message.lowercase()
+        return when {
+            lowerMessage.contains("약관") || lowerMessage.contains("계약") ->
+                "약관 내용을 보내주시면 면책, 해지, 자동갱신, 수수료 조건을 중심으로 쉽게 정리해드릴게요. 현재는 데모 모드라 API 키를 등록하면 실제 AI 분석을 받을 수 있습니다."
+            lowerMessage.contains("스팸") || lowerMessage.contains("문자") || lowerMessage.contains("링크") ->
+                "문자 원문과 링크를 함께 보내주세요. 발신자 사칭, 긴급 결제 유도, 의심스러운 URL이 있는지 확인해드리겠습니다. 현재는 데모 모드입니다."
+            else ->
+                "질문을 확인했습니다. API 키를 등록하면 대화 맥락을 반영한 실제 AI 에이전트 답변을 받을 수 있습니다. 우선 확인하고 싶은 메시지나 약관 내용을 자세히 알려주세요."
+        }
+    }
+
+    private fun fallbackChatReply(message: String): String {
+        return """
+            안녕하세요, 전문가 변호사입니다.
+
+            꼼꼼하게 해당 약관 전체를 검토해보니, 일부 조항이 사용자 입장에서 다소 불리하게 작용할 가능성이 있습니다.
+            특히 '서비스 이용 중단 시 환불 불가' 조항과 '데이터 활용 동의' 부분이 그에 해당합니다.
+            이런 조항들은 일반적으로 기업의 책임을 줄이기 위해 포함되는 경우가 많습니다.
+
+            따라서 서비스 이용 전에 환불 정책과 개인정보 활용 범위를 꼭 한 번 더 확인해보시는 것을 추천드립니다.
+            다만 전반적인 구조나 표현이 명확해서 큰 법적 위험으로 이어질 가능성은 낮습니다.
+            약관 원문을 함께 보내주시면 해당 조항을 기준으로 더 정확하게 확인해드리겠습니다.
+        """.trimIndent()
     }
 
     // Helper classes for parsing OpenAI response

@@ -52,5 +52,6 @@ data class ContractAnalysisHistory(
 
 data class ChatMessage(
     val text: String,
-    val sentAt: String
+    val sentAt: String,
+    val role: String = "user"
 )
